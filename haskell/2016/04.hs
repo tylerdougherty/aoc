@@ -7,13 +7,31 @@ main :: IO ()
 main = do
     file <- readFile "04.txt"
     putStrLn . show . validIdSum $ lines file
+    putStrLn . show . validRoomNames $ lines file
 
 validIdSum :: [[Char]] -> Int
 validIdSum xs = foldr (+) 0 (map validRoom xs)
 
+validRoomNames :: [[Char]] -> [[Char]]
+validRoomNames xs = map decode names
+    where validRooms = filter (\x -> validRoom x > 0) xs
+          names = map (head . splitOn "[") validRooms
+
+decode :: [Char] -> [Char]
+decode s = map (shiftLower (roomId s)) s
+
+shiftLower :: Int -> Char -> Char
+shiftLower n c
+    | c == '-'  = ' '
+    | isLower c = chr $ mod (ord c - ord 'a' + n) 26 + ord 'a'
+    | otherwise = c
+
+roomId :: [Char] -> Int
+roomId = read . filter isNumber
+
 validRoom :: [Char] -> Int
-validRoom r = if isValid then read roomId :: Int else 0
-    where [name, roomId, checksum] = [filter isLetter f, filter isNumber f, filter isLetter s]
+validRoom r = if isValid then roomId f else 0
+    where [name, checksum] = [filter isLetter f, filter isLetter s]
           [f, s] = splitOn "[" r
           isValid = hasMaxes checksum (letterMap name)
 
