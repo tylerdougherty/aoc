@@ -51,7 +51,7 @@ impl PartNumber {
         let r_min = max(1, self.row) - 1;
         let r_max = min(schematic.len() - 1, self.row + 1);
         let c_min = max(1, self.col) - 1;
-        let c_max = min(schematic.len() - 1, self.col + self.length);
+        let c_max = min(schematic[0].len() - 1, self.col + self.length);
         // println!("rows {}-{} cols {}-{}, both inclusive", r_min, r_max, c_min, c_max);
 
         for r in r_min..=r_max {
